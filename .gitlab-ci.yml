@@ -27,8 +27,8 @@ test:
   tags:
       - shell
   before_script:
-    - pip3 install pytest --break-system-packages
-    - pip3 install -r requirements.txt --break-system-packages
+    - pip3 install pytest --break-system-packages --ignore-installed
+    - pip3 install -r requirements.txt --break-system-packages --ignore-installed
   script:
     - pytest tests/ --disable-warnings --maxfail=1
   only:
