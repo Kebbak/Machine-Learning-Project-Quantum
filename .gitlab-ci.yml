@@ -1,15 +1,37 @@
 stages:
+  - environment
+  - code_quality
   - test
   - deploy
+
+environment:
+  stage: environment
+  script:
+    - echo "Setting up environment..."
+  except:
+    - main
+
+code_quality:
+  stage: code_quality
+  script:
+    - echo "Running code quality checks..."
+    - pip install flake8 --break-system-packages
+    - flake8 .
+  except:
+    - main
+  allow_failure: true
 
 test:
   stage: test
   tags:
       - shell
   before_script:
-    - pip install -r requirements.txt
+    - pip install -r requirements.txt --break-system-packages
   script:
     - pytest tests/ --disable-warnings --maxfail=1
+  only:
+    - main
+  when: on_success
 
 deploy:
   stage: deploy
@@ -19,4 +41,4 @@ deploy:
     - echo "Deploying to Render (or other host)..."
   only:
     - main
-  when: on_success
+  when: manual
