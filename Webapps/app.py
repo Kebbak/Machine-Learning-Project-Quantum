@@ -5,7 +5,9 @@ import joblib
 import os
 from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-from model_defs import SimpleMLP, TorchMLPClassifier
+import model_defs
+SimpleMLP = model_defs.SimpleMLP
+TorchMLPClassifier = model_defs.TorchMLPClassifier
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
