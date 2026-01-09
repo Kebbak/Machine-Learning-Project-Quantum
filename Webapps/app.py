@@ -1,8 +1,16 @@
+import sys
 from flask import Flask, request, render_template, jsonify
 import pandas as pd
 import joblib
 import os
 from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+from model_defs import SimpleMLP, TorchMLPClassifier
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+from sklearn.base import BaseEstimator, ClassifierMixin
+
 
 app = Flask(__name__)
 
@@ -12,7 +20,7 @@ def health():
     return 'OK', 200
 
 # Load the best model (robust path for deployment)
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'best_model.joblib')
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'best_model_PyTorchMLP.joblib')
 model = joblib.load(MODEL_PATH)
 
 # Robust path for processed train set

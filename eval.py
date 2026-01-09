@@ -3,6 +3,9 @@ import pandas as pd
 import random
 import torch
 import os
+import joblib
+from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report
+import sys
 
 # Set seeds for reproducibility
 def set_seeds(seed=42):
@@ -15,9 +18,6 @@ def set_seeds(seed=42):
 set_seeds(42)
 
 # Load processed test set and best model
-import joblib
-from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report
-import sys
 
 test = pd.read_csv(os.path.join('splits', 'test_processed.csv'))
 X_test = test.drop('Label', axis=1)
@@ -29,12 +29,16 @@ if len(sys.argv) > 1:
 else:
     model_path = 'best_model.joblib'
 
+# Define TorchMLPClassifier and SimpleMLP classes
+from Webapps.model_defs import SimpleMLP, TorchMLPClassifier
+
 model = joblib.load(model_path)
 y_pred = model.predict(X_test)
 y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else y_pred
 
 auc = roc_auc_score(y_test, y_proba)
-acc = accuracy_score(y_test, y_pred)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'Webapps')))
+from model_defs import SimpleMLP, TorchMLPClassifier
 cm = confusion_matrix(y_test, y_pred)
 report = classification_report(y_test, y_pred)
 
