@@ -10,7 +10,7 @@
 - AI tools provided quick solutions for common errors and integration issues.
 
 ## What Didn’t Work Well
-- Some generated code required manual adjustment for project-specific logic.
+- Some generated code required manual adjustment for project-specific logic/ business logic.
 - Occasional hallucinations or incorrect suggestions needed review.
 - Documentation and comments sometimes needed clarification.
 
