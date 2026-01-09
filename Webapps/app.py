@@ -15,12 +15,13 @@ def health():
 MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'best_model.joblib')
 model = joblib.load(MODEL_PATH)
 
-# Load feature names from processed train set
-FEATURES = pd.read_csv(os.path.join('..', 'splits', 'train_processed.csv')).drop('Label', axis=1).columns.tolist()
+# Robust path for processed train set
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FEATURES = pd.read_csv(os.path.join(BASE_DIR, 'splits', 'train_processed.csv')).drop('Label', axis=1).columns.tolist()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    demo_row = pd.read_csv(os.path.join('..', 'splits', 'train_processed.csv')).iloc[0][FEATURES].to_dict()
+    demo_row = pd.read_csv(os.path.join(BASE_DIR, 'splits', 'train_processed.csv')).iloc[0][FEATURES].to_dict()
     prediction = None
     if request.method == 'POST':
         input_data = [float(request.form.get(f, 0)) for f in FEATURES]
