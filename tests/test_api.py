@@ -1,7 +1,9 @@
+
 import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 import sys
+import os
 sys.path.append('Webapps')
 from app import app
 
@@ -14,7 +16,9 @@ def client():
 def test_predict_endpoint(client):
     # Use demo data from the app
     features = client.application.view_functions['index'].__globals__['FEATURES']
-    demo_row = client.application.view_functions['index'].__globals__['pd'].read_csv('../splits/train_processed.csv').iloc[0][features].to_dict()
+    pd_mod = client.application.view_functions['index'].__globals__['pd']
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    demo_row = pd_mod.read_csv(os.path.join(BASE_DIR, 'splits', 'train_processed.csv')).iloc[0][features].to_dict()
     data = {f: demo_row[f] for f in features}
     response = client.post('/', data=data)
     assert response.status_code == 200
