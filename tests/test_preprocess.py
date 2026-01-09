@@ -1,5 +1,6 @@
 import pytest
-from preprocess import SimpleImputer, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import numpy as np
 
