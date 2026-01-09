@@ -26,7 +26,7 @@ test:
   tags:
       - shell
   before_script:
-    - pip install -r requirements.txt --break-system-packages
+    - pip3 install flake8 --break-system-packages
   script:
     - pytest tests/ --disable-warnings --maxfail=1
   only:
