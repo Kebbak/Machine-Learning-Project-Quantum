@@ -6,8 +6,13 @@ from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, cla
 
 app = Flask(__name__)
 
-# Load the best model (update filename as needed)
-MODEL_PATH = '../best_model.joblib'  # Update to correct relative path
+# Health check endpoint for CI/CD smoke test
+@app.route('/health')
+def health():
+    return 'OK', 200
+
+# Load the best model (robust path for deployment)
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'best_model.joblib')
 model = joblib.load(MODEL_PATH)
 
 # Load feature names from processed train set
