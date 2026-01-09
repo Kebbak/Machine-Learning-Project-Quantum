@@ -34,10 +34,8 @@ test:
 
 deploy:
   stage: deploy
-  tags:
-      - shell
   script:
-    - echo "Deploying to Render (or other host)..."
+    - curl -X POST "https://api.render.com/deploy/$RENDER_SERVICE_ID?key=$RENDER_DEPLOY_KEY"
   only:
     - main
   when: manual
