@@ -10,14 +10,14 @@ environment:
     - echo "Setting up environment..."
   except:
     - main
-
+    
 code_quality:
   stage: code_quality
   script:
     - echo "Running code quality checks..."
-    - if ! command -v pip3 > /dev/null; then apt update && apt install python3-pip -y; fi
+    - if ! command -v pip3 > /dev/null; then apt-get update && apt-get install python3-pip -y; fi
     - pip3 install flake8 --break-system-packages
-    - flake8 .
+    - flake8 . --exclude=venv,env,__pycache__
   except:
     - main
   allow_failure: true
