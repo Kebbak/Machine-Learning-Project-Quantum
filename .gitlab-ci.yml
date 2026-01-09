@@ -15,6 +15,7 @@ code_quality:
   stage: code_quality
   script:
     - echo "Running code quality checks..."
+    - if ! command -v pip3 > /dev/null; then sudo apt update && sudo apt install python3-pip -y; fi
     - pip3 install flake8 --break-system-packages
     - flake8 .
   except:
