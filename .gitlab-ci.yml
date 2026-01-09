@@ -26,6 +26,9 @@ test:
   stage: test
   tags:
       - shell
+  before_script:
+    - pip3 install pytest --break-system-packages
+    - pip3 install -r requirements.txt --break-system-packages
   script:
     - pytest tests/ --disable-warnings --maxfail=1
   only:
