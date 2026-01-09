@@ -22,48 +22,72 @@ The web application is ready for deployment and public demo.
 
 # Step 3: Data Understanding & Preparation
 
-- **EDA:**
-  - Class balance: Only benign samples (Label=0) in train and test sets
-  - Missing data: Identify column has missing values (7461 in train, 1903 in test); all other columns are complete
-  - Feature distributions plotted for numeric columns (see splits/)
-  - Issues documented in splits/eda_issues.txt
-- **Preprocessing:**
-  - Missing values in numeric columns filled with train median
-  - Preprocessing fit on train, applied to test
-  - Processed files: splits/train_processed.csv, splits/test_processed.csv
+**EDA:**
+  - Class balance in training set:
+    - Malware (Label=1): 40,144 samples
+    - Goodware (Label=0): 16,892 samples
+    - Noted class imbalance (malware > goodware)
+  - Missing data:
+    - Columns with missing values: FormatedTimeDateStamp, Identify, MD5, Name, FirstSeenDate
+    - Example missing counts:
+      - FormatedTimeDateStamp: 40,144
+      - Identify: 18,847
+      - MD5: 40,144
+      - Name: 40,144
+      - FirstSeenDate: 16,892
+  - Feature distributions and correlation heatmap plotted (see eda_train_feature_distributions.png, eda_train_corr_heatmap.png)
+  - Issues documented in eda_issues.txt
+
+**Preprocessing Plan:**
+  - Will handle missing values in columns with high missingness (drop or impute as appropriate)
+  - Preprocessing (scaling, encoding, imputation) will be fit only on training data, then applied to validation/test sets
+  - All transformations will be documented and reproducible
+  - Processed files will be saved as splits/train_processed.csv and splits/test_processed.csv
 
 # Step 4: Train/Validation/Test Protocol
+  - The dataset was split into 80% training and 20% hold-out test set, stratified by class proportions to maintain balance.
+  - The test set was held out and not used for any preprocessing, feature engineering, or model selection to prevent data leakage.
+  - Within the training set, stratified 10-fold cross-validation (CV) was performed for model selection and hyperparameter tuning.
+  - All model selection and tuning was based only on the training data and CV results.
+  - The final evaluation was performed on the untouched test set after all model development was complete.
 
-- **Splitting Strategy:**
-  - 80% training, 20% hold-out test set (stratified by class proportions)
-  - Test set remains untouched until final evaluation
-- **Cross-Validation & Model Selection:**
-  - Stratified 10-fold cross-validation performed within training set for model selection and hyperparameter tuning
-  - Best parameters: {'max_depth': None, 'min_samples_split': 2, 'n_estimators': 50}
-  - Best CV accuracy: 1.0000
-  - Best model saved to best_model.joblib
+# Step 5: Feature Engineering & Preprocessing
+  - Dropped columns with excessive missing values or not useful for ML: FormatedTimeDateStamp, MD5, Name, FirstSeenDate.
+  - All non-numeric columns were removed to ensure compatibility with scikit-learn models.
+  - Only numeric features (plus Label) retained for modeling.
+  - Missing values in numeric columns imputed with the median (fit on train, applied to test).
+  - Numeric features scaled using StandardScaler (fit on train, applied to test).
+  - All preprocessing steps fit only on training data, then applied to validation/test sets.
+  - Processed files: splits/train_processed.csv, splits/test_processed.csv
 
-# Step 5: Preprocessing & Feature Engineering
+  - No additional feature selection or dimensionality reduction was applied at this stage.
+  - All transformations are reproducible and documented in preprocess.py.
 
-- **Preprocessing Steps:**
-  - Scaling (StandardScaler) and feature selection (SelectKBest) included in CV pipeline
-  - All transformations fit only on training folds during cross-validation, then applied to validation/test folds
-  - Feature selection warnings (invalid value in divide) expected due to single-class data
-- **Feature Engineering Results:**
-  - Best parameters: {'clf__max_depth': None, 'clf__min_samples_split': 2, 'clf__n_estimators': 50, 'select__k': 5}
-  - Best CV accuracy: 1.0000
-  - Best model saved to best_model.joblib
 
 # Step 6: Model Training & Evaluation
 
-- **Models Evaluated:**
+**Models Evaluated:**
   - Baseline: Logistic Regression, Decision Tree, Random Forest, PyTorch MLP
   - Additional: XGBoost, LightGBM, CatBoost
-- **Results:**
-  - Cross-validation (AUC/accuracy ± std) recorded for all models
-  - Best model selected by mean CV AUC
-  - Final test set evaluation performed and saved to test_results.txt
-  - Results saved to cv_results_all_models.csv
+
+**Cross-Validation Results:**
+  - For each model, 10-fold stratified cross-validation was performed.
+  - Mean ± std dev for AUC and accuracy were recorded in cv_results_all_models.csv.
+  - The best model by mean CV AUC was selected for final evaluation.
+
+**Final Test Set Evaluation:**
+  - Test AUC: 0.7295
+  - Test Accuracy: 0.6586
+  - Confusion Matrix:
+    [[ 425 3798]
+     [1070 8967]]
+  - Classification Report:
+    - Class 0 (goodware): precision 0.28, recall 0.10, f1-score 0.15, support 4223
+    - Class 1 (malware): precision 0.70, recall 0.89, f1-score 0.79, support 10037
+    - Macro avg: precision 0.49, recall 0.50, f1-score 0.47
+    - Weighted avg: precision 0.58, recall 0.66, f1-score 0.60
+  - The model is much better at detecting malware than goodware, likely due to class imbalance.
+  - Full results saved to test_results.txt.
 
 # Step 7: Web Application Development
 
