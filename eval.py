@@ -2,10 +2,14 @@ import numpy as np
 import pandas as pd
 import random
 import torch
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'Webapps')))
+import model_defs
+SimpleMLP = model_defs.SimpleMLP
+TorchMLPClassifier = model_defs.TorchMLPClassifier
 import joblib
 from sklearn.metrics import roc_auc_score, accuracy_score, confusion_matrix, classification_report
-import sys
 
 # Set seeds for reproducibility
 def set_seeds(seed=42):
@@ -34,11 +38,11 @@ from Webapps.model_defs import SimpleMLP, TorchMLPClassifier
 
 model = joblib.load(model_path)
 y_pred = model.predict(X_test)
+
 y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else y_pred
 
 auc = roc_auc_score(y_test, y_proba)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'Webapps')))
-from model_defs import SimpleMLP, TorchMLPClassifier
+acc = accuracy_score(y_test, y_pred)
 cm = confusion_matrix(y_test, y_pred)
 report = classification_report(y_test, y_pred)
 

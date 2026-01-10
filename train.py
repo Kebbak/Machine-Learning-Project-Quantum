@@ -3,8 +3,8 @@ import pandas as pd
 import random
 import torch
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'Webapps')))
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'Webapps')))
 
 # Set seeds for reproducibility
 def set_seeds(seed=42):
@@ -30,7 +30,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold, cross_val_score, GridSearchCV
-from model_defs import SimpleMLP, TorchMLPClassifier
+import model_defs
+SimpleMLP = model_defs.SimpleMLP
+TorchMLPClassifier = model_defs.TorchMLPClassifier
+import joblib
 
 # Additional models
 import xgboost as xgb
@@ -38,7 +41,6 @@ import lightgbm as lgb
 import catboost as cb
 
 # PyTorch MLP
-from Webapps.model_defs import SimpleMLP, TorchMLPClassifier
 
 models = {
     'LogisticRegression': LogisticRegression(max_iter=1000, random_state=42),
