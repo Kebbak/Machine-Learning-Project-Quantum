@@ -1,3 +1,4 @@
+# steps to run CI/CD for machine-learning-project-quantum
 stages:
   - environment
   - code_quality
