@@ -40,11 +40,10 @@ import xgboost as xgb
 import lightgbm as lgb
 import catboost as cb
 
-# PyTorch MLP
-
+# Define models to evaluate to find best one model by AUC
 models = {
     'LogisticRegression': LogisticRegression(max_iter=1000, random_state=42),
-    'DecisionTree': DecisionTreeClassifier(random_state=42),
+    'DecisionTree': DecisionTreeClassifier(random_state=42), 
     'RandomForest': RandomForestClassifier(random_state=42),
     'PyTorchMLP': TorchMLPClassifier(input_dim=X_train.shape[1], epochs=10),
     'XGBoost': xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42),

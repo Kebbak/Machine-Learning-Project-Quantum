@@ -33,7 +33,7 @@ plt.title('Feature Correlation Heatmap')
 plt.savefig('eda_train_corr_heatmap.png')
 plt.close()
 
-# 5. Save EDA summary
+# 5. Save Exploratory data analysis summary
 data_issues = missing[missing > 0]
 with open('eda_issues.txt', 'w') as f:
     f.write('Class balance:\n')
