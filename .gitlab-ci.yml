@@ -4,7 +4,7 @@ stages:
   - code_quality
   - test
   - deploy
-# Define variables for Render deployment
+
 environment:
   stage: environment
   script:
