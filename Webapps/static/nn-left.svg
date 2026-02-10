@@ -1,0 +1,12 @@
+<!-- Abstract neural network SVG for left side background -->
+<svg width="320" height="900" viewBox="0 0 320 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.13">
+    <circle cx="60" cy="120" r="40" fill="#ffb347"/>
+    <circle cx="120" cy="300" r="30" fill="#ffb347"/>
+    <circle cx="80" cy="500" r="50" fill="#ffb347"/>
+    <circle cx="160" cy="700" r="35" fill="#ffb347"/>
+    <line x1="60" y1="120" x2="120" y2="300" stroke="#ffb347" stroke-width="4"/>
+    <line x1="120" y1="300" x2="80" y2="500" stroke="#ffb347" stroke-width="4"/>
+    <line x1="80" y1="500" x2="160" y2="700" stroke="#ffb347" stroke-width="4"/>
+  </g>
+</svg>

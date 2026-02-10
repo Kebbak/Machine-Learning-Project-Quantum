@@ -14,8 +14,7 @@ TEST_OUT = os.path.join('splits', 'test_processed.csv')
 train = pd.read_csv(TRAIN_RAW)
 test = pd.read_csv(TEST_RAW)
 
-# Drop columns with too many missing values or not useful for ML
-cols_to_drop = ['FormatedTimeDateStamp', 'MD5', 'Name', 'FirstSeenDate']
+cols_to_drop = ['FormatedTimeDateStamp', 'MD5', 'Name', 'FirstSeenDate', 'PE_TYPE']
 train = train.drop(columns=cols_to_drop, errors='ignore')
 test = test.drop(columns=cols_to_drop, errors='ignore')
 

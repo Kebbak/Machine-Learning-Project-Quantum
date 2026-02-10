@@ -1,0 +1,116 @@
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 20px;
+}
+
+.table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    background: #232526;
+    color: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th, .table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #444;
+    text-align: left;
+}
+
+.table th {
+    background: #343a40;
+    color: #ffb347;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background: #2c2c2c;
+}
+
+.table-bordered {
+    border: 1px solid #444;
+}
+
+@media (max-width: 700px) {
+    .container {
+        max-width: 98vw;
+        padding: 10px 2vw;
+    }
+    .table {
+        min-width: 400px;
+        font-size: 0.92rem;
+    }
+}
+body {
+    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+    color: #f5f5f5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: rgba(34, 34, 34, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 40px 32px;
+}
+
+h1, h2, h3 {
+    color: #ffb347;
+    margin-bottom: 16px;
+}
+
+input, select, button {
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+    color: #232526;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #ffcc33 0%, #ffb347 100%);
+}
+
+.card {
+    background: #2c2c2c;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.result {
+    background: #232526;
+    color: #ffb347;
+    font-size: 1.2rem;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 24px;
+    text-align: center;
+}
+
+a {
+    color: #ffb347;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}

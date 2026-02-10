@@ -1,0 +1,44 @@
+# steps to run CI/CD for machine-learning-project-quantum
+stages:
+  - environment
+  - code_quality
+  - test
+  - deploy
+# Define variables for Render deployment
+environment:
+  stage: environment
+  script:
+    - echo "Setting up environment..."
+  except:
+    - main
+    
+code_quality:
+  stage: code_quality
+  script:
+    - echo "Running code quality checks..."
+    - if ! command -v pip3 > /dev/null; then apt-get update && apt-get install python3-pip -y; fi
+    - pip3 install flake8 --break-system-packages
+    - flake8 . --exclude=venv,env,__pycache__ || true
+  except:
+    - main
+  allow_failure: true
+
+test:
+  stage: test
+  tags:
+      - shell
+  before_script:
+    - pip3 install pytest --break-system-packages --ignore-installed
+    - pip3 install -r requirements.txt --break-system-packages --ignore-installed
+  script:
+    - pytest tests/ --disable-warnings --maxfail=1
+  only:
+    - main
+  when: on_success
+
+deploy:
+  stage: deploy
+  script:
+    - curl -X POST "https://api.render.com/deploy/$RENDER_SERVICE_ID?key=$RENDER_DEPLOY_KEY"
+  only:
+    - main

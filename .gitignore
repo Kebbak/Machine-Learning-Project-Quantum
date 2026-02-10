@@ -1,1 +1,4 @@
-*.csv
+malware.csv
+goodware.csv
+splits/train_raw.csv
+splits/test_raw.csv
