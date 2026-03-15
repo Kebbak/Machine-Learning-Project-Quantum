@@ -1,93 +1,101 @@
-# Machine Learning-Project-Quantum
+# Step 1: Dataset & Problem Definition
+
+- **Dataset Used:** goodware.csv (benign samples only)
+- **Target Variable:** Label (all samples labeled as 0)
+- **Success Metrics:**
+  - Primary: Area Under the ROC Curve (AUC)
+  - Secondary: Accuracy
+- **Data Split:**
+  - 80% training set, 20% test set
+  - Test set held out before any data preprocessing or feature engineering to prevent leakage
+  - Output files: splits/train_raw.csv, splits/test_raw.csv
+
+# Step 2: Environment & Reproducibility
+
+- **Virtual Environment:** Recommended to use venv or conda for isolation
+- **Dependencies:** All required packages pinned in requirements.txt
+- **Reproducibility Scripts:**
+  - train.py: trains a model on train_raw.csv
+  - eval.py: evaluates model on test_raw.csv
+- **Random Seeds:** Fixed random seeds for splits and model training (default: 42)
+
+# Step 3: Data Understanding & Preparation
+
+**EDA:**
+  - Class balance in training set:
+    - Malware (Label=1): 40,144 samples
+    - Goodware (Label=0): 16,892 samples
+    - Noted class imbalance (malware > goodware)
+  - Missing data:
+    - Columns with missing values: FormatedTimeDateStamp, Identify, MD5, Name, FirstSeenDate
+    - Example missing counts:
+      - FormatedTimeDateStamp: 40,144
+      - Identify: 18,847
+      - MD5: 40,144
+      - Name: 40,144
+      - FirstSeenDate: 16,892
+  - Feature distributions and correlation heatmap plotted (see eda_train_feature_distributions.png, eda_train_corr_heatmap.png)
+  - Issues documented in eda_issues.txt
+
+**Preprocessing Plan:**
+  - Will handle missing values in columns with high missingness (drop or impute as appropriate)
+  - Preprocessing (scaling, encoding, imputation) will be fit only on training data, then applied to validation/test sets
+  - All transformations will be documented and reproducible
+  - Processed files will be saved as splits/train_processed.csv and splits/test_processed.csv
+
+# Step 4: Train/Validation/Test Protocol
+  - The dataset was split into 80% training and 20% hold-out test set, stratified by class proportions to maintain balance.
+  - The test set was held out and not used for any preprocessing, feature engineering, or model selection to prevent data leakage.
+  - Within the training set, stratified 10-fold cross-validation (CV) was performed for model selection and hyperparameter tuning.
+  - All model selection and tuning was based only on the training data and CV results.
+  - The final evaluation was performed on the untouched test set after all model development was complete.
+
+# Step 5: Feature Engineering & Preprocessing
+  - Dropped columns with excessive missing values or not useful for ML: FormatedTimeDateStamp, MD5, Name, FirstSeenDate.
+  - All non-numeric columns were removed to ensure compatibility with scikit-learn models.
+  - Only numeric features (plus Label) retained for modeling.
+  - Missing values in numeric columns imputed with the median (fit on train, applied to test).
+  - Numeric features scaled using StandardScaler (fit on train, applied to test).
+  - All preprocessing steps fit only on training data, then applied to validation/test sets.
+  - Processed files: splits/train_processed.csv, splits/test_processed.csv
+
+  - No additional feature selection or dimensionality reduction was applied at this stage.
+  - All transformations are reproducible and documented in preprocess.py.
 
 
+# Step 6: Model Training & Evaluation
 
-## Getting started
+**Models Evaluated:**
+  - Baseline: Logistic Regression, Decision Tree, Random Forest, PyTorch MLP
+  - Additional: XGBoost, LightGBM, CatBoost
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+**Cross-Validation Results:**
+  - For each model, 10-fold stratified cross-validation was performed.
+  - Mean ± std dev for AUC and accuracy were recorded in cv_results_all_models.csv.
+  - The best model by mean CV AUC was selected for final evaluation.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+**Final Test Set Evaluation:**
+  - Test AUC: 0.7295
+  - Test Accuracy: 0.6586
+  - Confusion Matrix:
+    [[ 425 3798]
+     [1070 8967]]
+  - Classification Report:
+    - Class 0 (goodware): precision 0.28, recall 0.10, f1-score 0.15, support 4223
+    - Class 1 (malware): precision 0.70, recall 0.89, f1-score 0.79, support 10037
+    - Macro avg: precision 0.49, recall 0.50, f1-score 0.47
+    - Weighted avg: precision 0.58, recall 0.66, f1-score 0.60
+  - The model is much better at detecting malware than goodware, likely due to class imbalance.
+  - Full results saved to test_results.txt.
 
-## Add your files
+# Step 7: Web Application Development
 
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.com/kebba-test-group/machine-learning-project-quantum.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-* [Set up project integrations](https://gitlab.com/kebba-test-group/machine-learning-project-quantum/-/settings/integrations)
-
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- **Production Model Integration:**
+  - The best-performing model is loaded and used for inference in a Flask web application.
+- **UI Features:**
+  - Manual feature entry form with a pre-filled demo row from the dataset for easy testing.
+  - File upload option for batch predictions on multiple instances.
+  - Results for each instance are displayed in a table.
+- **Evaluation Metrics:**
+  - If the uploaded file contains class labels, the app computes and displays AUC, accuracy, and the confusion matrix.
+  - This can be demonstrated using the 20% hold-out test file.
